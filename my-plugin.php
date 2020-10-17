@@ -4,7 +4,7 @@
  * Plugin Name:       My Plugin
  * Plugin URI:        https://myplugin.com
  * Description:       This is a Demo Plugin
- * Version:           1.0.0
+ * Version:           1.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            WpToffee
@@ -34,7 +34,10 @@ final class myPlugin {
     private function __construct(){
 
         $this->defineConstance();
+
         register_activation_hook( __FILE__, [ $this, 'Activate' ] );
+
+        add_action( "plugins_loaded", [ $this, 'init_plugin' ] );
 
     }
 
@@ -65,7 +68,7 @@ final class myPlugin {
         define('MYPLUGIN_PATH', __DIR__);
         define('MYPLUGIN_URL', plugins_url('', MYPLUGIN_FILE));
         define('MYPLUGIN_ASSETS', MYPLUGIN_URL."/assets");
-        define('MYPLUGIN_Admin_ASSETS', MYPLUGIN_URL."/includes/Admin/assets");
+        define('MYPLUGIN_ADMIN_ASSETS', MYPLUGIN_URL."/includes/Admin/assets");
         define('MYPLUGIN_PUBLIC_ASSETS', MYPLUGIN_URL."/includes/Public/assets");
     }
 
@@ -83,6 +86,10 @@ final class myPlugin {
 
         update_option('my_plugin_version', MYPLUGIN_VERSION );
     }
+
+    public function init_plugin(){
+
+    }
     
 }
 
@@ -95,7 +102,11 @@ function my_plugin(){
     return myPlugin::init();
 }
 
+
+
 /**
  * kick-off the plugin
  */
 my_plugin();
+
+
