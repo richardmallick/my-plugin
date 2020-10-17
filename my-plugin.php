@@ -19,6 +19,11 @@ if( ! defined('ABSPATH') ){
 }
 
 /**
+ * Included Autoload File
+ */
+require_once __DIR__ . "/vendor/autoload.php";
+
+/**
  * The main Plugin Class
  */
 final class myPlugin {
@@ -51,7 +56,9 @@ final class myPlugin {
         static $instance = false;
 
         if( ! $instance ){
+
             $instance = new self();
+
         }
 
         return $instance;
@@ -63,13 +70,15 @@ final class myPlugin {
      * @return /myPlugin
      */
     public function defineConstance(){
+
         define('MYPLUGIN_VERSION', self::version);
         define('MYPLUGIN_FILE', __FILE__);
         define('MYPLUGIN_PATH', __DIR__);
         define('MYPLUGIN_URL', plugins_url('', MYPLUGIN_FILE));
         define('MYPLUGIN_ASSETS', MYPLUGIN_URL."/assets");
         define('MYPLUGIN_ADMIN_ASSETS', MYPLUGIN_URL."/includes/Admin/assets");
-        define('MYPLUGIN_PUBLIC_ASSETS', MYPLUGIN_URL."/includes/Public/assets");
+        define('MYPLUGIN_FRONTEND_ASSETS', MYPLUGIN_URL."/includes/Frontend/assets");
+
     }
 
     /**
@@ -80,14 +89,28 @@ final class myPlugin {
     public function Activate(){
 
         $installed = get_option('my_plugin_installed');
+
         if(! $installed ){
+
             update_option('my_plugin_installed', time() );
+
         }
 
         update_option('my_plugin_version', MYPLUGIN_VERSION );
     }
 
+    /**
+     * Plugins Loaded
+     *
+     * @return /myPlugin
+     */
     public function init_plugin(){
+
+        if( is_admin() ){
+            new myPlugin\Admin();
+        }else{
+            new myPlugin\Frontend();
+        }
 
     }
     
@@ -99,10 +122,10 @@ final class myPlugin {
  * @return /myPlugin
  */
 function my_plugin(){
+
     return myPlugin::init();
+
 }
-
-
 
 /**
  * kick-off the plugin
